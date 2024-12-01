@@ -44,14 +44,14 @@ func myAbs(x, y int) int {
 
 func two(ldata []int, rdata []int) {
 	var res int
+
+	itemCounts := make(map[int]int)
+	for _, i := range rdata {
+		itemCounts[i] += 1
+	}
+
 	for _, i := range ldata {
-		var cnt int
-		for _, j := range rdata {
-			if j == i {
-				cnt++
-			}
-		}
-		res += i * cnt
+		res += i * itemCounts[i]
 	}
 
 	fmt.Printf("Task 2: %v\n", res)
