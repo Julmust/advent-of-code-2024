@@ -77,6 +77,49 @@ func one(data [][]int) {
 
 }
 
+func remove(slice []int, s int) []int {
+	return append(slice[:s], slice[s+1:]...)
+}
+
+func generatePermutations(d []int) [][]int {
+	var op [][]int
+	baseSliceLen := len(d)
+
+	for i := 0; i < baseSliceLen; i++ {
+		os := make([]int, baseSliceLen)
+		copy(os, d)
+		tmpSlice := remove(os, i)
+		op = append(op, tmpSlice)
+	}
+
+	return op
+}
+
+func two(data [][]int) {
+	ans := 0
+	for _, v := range data {
+		success := checkSlope(v)
+		if !success {
+			// Generate permutations
+			permutations := generatePermutations(v)
+
+			for _, permutation := range permutations {
+				success = checkSlope(permutation)
+				if success {
+					break
+				}
+			}
+		}
+
+		if success {
+			ans++
+		}
+	}
+
+	fmt.Printf("Task 2: %v\n", ans)
+
+}
+
 func main() {
 	// data := ir.ReadText("example.txt")
 	data := ir.ReadText("input.txt")
@@ -84,4 +127,5 @@ func main() {
 	parsedData := parseData(data)
 
 	one(parsedData)
+	two(parsedData)
 }
