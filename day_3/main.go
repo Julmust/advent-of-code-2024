@@ -8,11 +8,6 @@ import (
 	"strings"
 )
 
-type State struct {
-	doIsActive  bool
-	mulIsActive bool
-}
-
 type Stack struct {
 	items []string
 	total int
@@ -64,6 +59,22 @@ func isAllowedAlphaCharacter(char string) bool {
 	return false
 }
 
+func stackInteract(strChr string, stack *Stack, isActive *bool) {
+	if isAllowedAlphaCharacter(strChr) || isNumeric(strChr) {
+		stack.push(strChr)
+	} else {
+		if strChr == ")" {
+			stack.push(strChr)
+		}
+		*isActive = false
+		val, err := stack.attemptMul()
+		if err == nil {
+			stack.total += val
+		}
+		stack.clear()
+	}
+}
+
 func two(data string) {
 	doIsActive := true
 	isActive := false
@@ -85,19 +96,7 @@ func two(data string) {
 			}
 
 			if isActive {
-				if isAllowedAlphaCharacter(strChr) || isNumeric(strChr) {
-					stack.push(strChr)
-				} else {
-					if strChr == ")" {
-						stack.push(strChr)
-					}
-					isActive = false
-					val, err := stack.attemptMul()
-					if err == nil {
-						stack.total += val
-					}
-					stack.clear()
-				}
+				stackInteract(strChr, &stack, &isActive)
 			}
 		}
 	}
@@ -105,7 +104,7 @@ func two(data string) {
 }
 
 func one(data string) {
-	s := Stack{total: 0}
+	stack := Stack{total: 0}
 	isActive := false
 
 	for _, char := range data {
@@ -116,23 +115,11 @@ func one(data string) {
 		}
 
 		if isActive {
-			if isAllowedAlphaCharacter(strChr) || isNumeric(strChr) {
-				s.push(strChr)
-			} else {
-				if strChr == ")" {
-					s.push(strChr)
-				}
-				isActive = false
-				val, err := s.attemptMul()
-				if err == nil {
-					s.total += val
-				}
-				s.clear()
-			}
+			stackInteract(strChr, &stack, &isActive)
 		}
 	}
 
-	fmt.Printf("Task 1: %v\n", s.total)
+	fmt.Printf("Task 1: %v\n", stack.total)
 }
 
 func main() {
