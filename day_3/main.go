@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+type State struct {
+	doIsActive  bool
+	mulIsActive bool
+}
+
 type Stack struct {
 	items []string
 	total int
@@ -59,6 +64,46 @@ func isAllowedAlphaCharacter(char string) bool {
 	return false
 }
 
+func two(data string) {
+	doIsActive := true
+	isActive := false
+	stack := Stack{total: 0}
+
+	for idx, char := range data {
+		strChr := string(char)
+		if strChr == "d" {
+			if data[idx:idx+4] == "do()" {
+				doIsActive = true
+			} else if data[idx:idx+7] == "don't()" {
+				doIsActive = false
+			}
+		}
+
+		if doIsActive {
+			if !isActive && strChr == "m" {
+				isActive = true
+			}
+
+			if isActive {
+				if isAllowedAlphaCharacter(strChr) || isNumeric(strChr) {
+					stack.push(strChr)
+				} else {
+					if strChr == ")" {
+						stack.push(strChr)
+					}
+					isActive = false
+					val, err := stack.attemptMul()
+					if err == nil {
+						stack.total += val
+					}
+					stack.clear()
+				}
+			}
+		}
+	}
+	fmt.Printf("Task 2: %v\n", stack.total)
+}
+
 func one(data string) {
 	s := Stack{total: 0}
 	isActive := false
@@ -96,4 +141,5 @@ func main() {
 
 	// fmt.Println(data)
 	one(data[0])
+	two(data[0])
 }
