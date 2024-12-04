@@ -28,6 +28,21 @@ func expandInput(data []string, yMax int) []string {
 	return output
 }
 
+func searchSubstrTwo(data []string, yStart, xStart int) int {
+	noFound := 0
+
+	substrOne := string(data[yStart-1][xStart-1]) + string(data[yStart][xStart]) + string(data[yStart+1][xStart+1])
+	substrTwo := string(data[yStart+1][xStart-1]) + string(data[yStart][xStart]) + string(data[yStart-1][xStart+1])
+
+	if substrOne == "MAS" || substrOne == "SAM" {
+		if substrTwo == "MAS" || substrTwo == "SAM" {
+			noFound += 1
+		}
+	}
+
+	return noFound
+}
+
 func searchSubstr(data []string, yStart, xStart int) int {
 	// right, left, down, up, right-up, right-down, left-up, left-down
 	substrings := [8]string{"", "", "", "", "", "", "", ""}
@@ -55,12 +70,25 @@ func searchSubstr(data []string, yStart, xStart int) int {
 
 func one(data []string) {
 	var total int
-	// var cnt int
 
 	for yidx := range data {
 		for xidx := range data[yidx] {
 			if string(data[yidx][xidx]) == "X" {
 				total += searchSubstr(data, yidx, xidx)
+			}
+		}
+	}
+
+	fmt.Printf("Task 1: %v\n", total)
+}
+
+func two(data []string) {
+	var total int
+
+	for yidx := range data {
+		for xidx := range data[yidx] {
+			if string(data[yidx][xidx]) == "A" {
+				total += searchSubstrTwo(data, yidx, xidx)
 			}
 		}
 	}
@@ -75,4 +103,5 @@ func main() {
 	parsedData := expandInput(data, len(data))
 
 	one(parsedData)
+	two(parsedData)
 }
