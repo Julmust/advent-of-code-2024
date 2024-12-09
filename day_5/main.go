@@ -3,6 +3,7 @@ package main
 import (
 	ir "aoc_2024/inputreader"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -73,9 +74,6 @@ func getMid(pages []string) int {
 func one(rawRules, rawPages []string) {
 	m := parseRules(rawRules)
 	op := 0
-	// for _, v := range m {
-	// 	fmt.Println(v)
-	// }
 
 	for _, entry := range rawPages {
 		valid := true
@@ -99,10 +97,64 @@ func one(rawRules, rawPages []string) {
 	fmt.Printf("Part 1: %v\n", op)
 }
 
+func isValid(m map[string]rule, pages []string) bool {
+	for idx := range pages {
+		curr, after := pages[idx], pages[idx+1:]
+		validPage := checkOneVal(curr, after, m)
+
+		if !validPage {
+			return false
+		}
+	}
+	return true
+}
+
+func fixInvalidPage(rules map[string]rule, invalidPage []string) int {
+	var left, right rule
+
+	for {
+		for l, r := 0, 1; r < len(invalidPage); l, r = l+1, r+1 {
+			left = rules[invalidPage[l]]
+			right = rules[invalidPage[r]]
+			if !slices.Contains(left.downstream, right.base_page) {
+				invalidPage[l], invalidPage[r] = invalidPage[r], invalidPage[l]
+			}
+		}
+		if isValid(rules, invalidPage) {
+			return getMid(invalidPage)
+		}
+	}
+}
+
+func two(rawRules, rawPages []string) {
+	m := parseRules(rawRules)
+	op := 0
+	var invalidPages [][]string
+
+	for _, entry := range rawPages {
+		pages := strings.Split(entry, ",")
+		for idx := range pages {
+			curr, after := pages[idx], pages[idx+1:]
+			validPage := checkOneVal(curr, after, m)
+
+			if !validPage {
+				invalidPages = append(invalidPages, pages)
+				break
+			}
+		}
+	}
+	for _, ip := range invalidPages {
+		op += fixInvalidPage(m, ip)
+	}
+
+	fmt.Printf("Part 2: %v\n", op)
+}
+
 func main() {
 	// data := ir.ReadText("example.txt")
 	data := ir.ReadText("input.txt")
 	rules, pages := parseData(data)
 
 	one(rules, pages)
+	two(rules, pages)
 }
