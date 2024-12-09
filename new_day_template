@@ -1,0 +1,13 @@
+package main
+
+import ir "aoc_2024/inputreader"
+
+func one() {
+
+}
+
+func main() {
+	data := ir.ReadText("example.txt")
+	// data := ir.ReadText("input.txt")
+
+}
