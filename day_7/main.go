@@ -28,8 +28,13 @@ func parseData(data []string) [][]int {
 	return p
 }
 
-func getPermutations(noOps int) []string {
-	input := "+*"
+func getPermutations(noOps int, concat bool) []string {
+	var input string
+	if concat {
+		input = "+*|"
+	} else {
+		input = "+*"
+	}
 
 	if noOps <= 0 {
 		return nil
@@ -58,12 +63,18 @@ func getPermutations(noOps int) []string {
 func calc(a, b int, op string) int {
 	if op == "*" {
 		return a * b
+	} else if op == "|" {
+		strA := strconv.Itoa(a)
+		strB := strconv.Itoa(b)
+
+		o, _ := strconv.Atoi(strA + strB)
+		return o
 	}
 	return a + b
 }
 
-func validateEntry(target int, values []int) bool {
-	permutations := getPermutations(len(values) - 1)
+func validateEntry(target int, values []int, concat bool) bool {
+	permutations := getPermutations(len(values)-1, concat)
 	for _, perm := range permutations {
 		var tot = 0
 		for idx := range values {
@@ -85,7 +96,18 @@ func validateEntry(target int, values []int) bool {
 func one(data [][]int) {
 	var res int
 	for _, v := range data {
-		if validateEntry(v[0], v[1:]) {
+		if validateEntry(v[0], v[1:], false) {
+			res += v[0]
+		}
+	}
+
+	fmt.Printf("Part 1: %v\n", res)
+}
+
+func two(data [][]int) {
+	var res int
+	for _, v := range data {
+		if validateEntry(v[0], v[1:], true) {
 			res += v[0]
 		}
 	}
@@ -100,4 +122,5 @@ func main() {
 	parsedData := parseData(data)
 
 	one(parsedData)
+	two(parsedData)
 }
