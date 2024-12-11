@@ -63,7 +63,6 @@ func calcResults(rB [][]string) int {
 }
 
 func one(parsedData map[string][][]int, resultBoard [][]string) {
-	fmt.Println(parsedData)
 	for _, coords := range parsedData {
 		for idx := range coords {
 			start := coords[idx]
