@@ -89,6 +89,57 @@ func one(parsedData map[string][][]int, resultBoard [][]string) {
 	fmt.Printf("Task 1: %v\n", calcResults(resultBoard))
 }
 
+func twoone(parsedData map[string][][]int, resultBoard [][]string) [][]string {
+	for _, coords := range parsedData {
+		for _, coord := range coords {
+			resultBoard[coord[1]][coord[0]] = "#"
+		}
+	}
+
+	return resultBoard
+}
+
+func two(parsedData map[string][][]int, resultBoard [][]string) {
+	for _, coords := range parsedData {
+		for idx := range coords {
+			start := coords[idx]
+
+			for i := (idx + 1); i < len(coords); i++ {
+				x, y := start[0]-coords[i][0], start[1]-coords[i][1]
+
+				Xone, Yone, Xtwo, Ytwo := x, y, (x * -1), (y * -1)
+
+				bX := start[0] + Xone
+				bY := start[1] + Yone
+				for {
+					if checkBounds(bX, bY, resultBoard) {
+						resultBoard[bY][bX] = "#"
+						bX += Xone
+						bY += Yone
+					} else {
+						break
+					}
+				}
+
+				bX = coords[i][0] + Xtwo
+				bY = coords[i][1] + Ytwo
+				for {
+					if checkBounds(bX, bY, resultBoard) {
+						resultBoard[bY][bX] = "#"
+						bX += Xtwo
+						bY += Ytwo
+					} else {
+						break
+					}
+				}
+			}
+		}
+	}
+	resultBoard = twoone(parsedData, resultBoard)
+	printResultBoard(resultBoard)
+	fmt.Printf("Task 2: %v\n", calcResults(resultBoard))
+}
+
 func main() {
 	// data := ir.ReadText("example.txt")
 	data := ir.ReadText("input.txt")
@@ -96,5 +147,6 @@ func main() {
 	parsedData := parseData(data)
 	eb := createEmptyBoard(len(data[0]), len(data))
 
-	one(parsedData, eb)
+	// one(parsedData, eb)
+	two(parsedData, eb)
 }
