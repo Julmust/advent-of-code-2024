@@ -85,7 +85,6 @@ func one(parsedData map[string][][]int, resultBoard [][]string) {
 			}
 		}
 	}
-	printResultBoard(resultBoard)
 	fmt.Printf("Task 1: %v\n", calcResults(resultBoard))
 }
 
@@ -136,7 +135,6 @@ func two(parsedData map[string][][]int, resultBoard [][]string) {
 		}
 	}
 	resultBoard = twoone(parsedData, resultBoard)
-	printResultBoard(resultBoard)
 	fmt.Printf("Task 2: %v\n", calcResults(resultBoard))
 }
 
@@ -147,6 +145,6 @@ func main() {
 	parsedData := parseData(data)
 	eb := createEmptyBoard(len(data[0]), len(data))
 
-	// one(parsedData, eb)
+	one(parsedData, eb)
 	two(parsedData, eb)
 }
